@@ -1,2 +1,3 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<h1>Conway’s Game of Life: Multiplayer</h1>
+<p><a href="/game">Join Game</a></p>
+<p><a href="/arena">6 Games Arena</a></p>
