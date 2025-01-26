@@ -11,6 +11,9 @@ const createServer = (httpServer: HttpServer) =>
 export type WebSocketServer = ReturnType<typeof createServer>;
 export type ServerSocket = Parameters<Parameters<WebSocketServer['use']>[0]>[0];
 
+/**
+ * Starts the WebSocket server which hosts the game engine.
+ */
 export function registerServer(httpServer: HttpServer) {
 	const io = createServer(httpServer);
 
