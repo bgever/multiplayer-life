@@ -5,9 +5,7 @@ import {internal, next, willLive} from './game';
 const {neighboringPositions, neighbors} = internal;
 
 const mockGrid: GridData = Array.from({length: 10}, (_, rowIndex) =>
-	Array.from({length: 10}, (_, colIndex) => ({
-		color: String.fromCharCode(97 + rowIndex) + colIndex // Starts at 'a'.
-	}))
+	Array.from({length: 10}, (_, colIndex) => String.fromCharCode(/* a */ 97 + rowIndex) + colIndex)
 );
 
 describe(neighboringPositions.name, () => {
@@ -25,28 +23,28 @@ describe(neighbors.name, () => {
 	it('gets the 0,0 position with neighbors from opposite edges of the grid', () => {
 		// prettier-ignore
 		expect(neighbors(mockGrid, [0, 0])).toEqual([
-			{color: 'j9'}, {color: 'j0'}, {color: 'j1'},
-			{color: 'a9'}, /* skipped */ {color: 'a1'},
-			{color: 'b9'}, {color: 'b0'}, {color: 'b1'}
+			'j9', 'j0', 'j1',
+			'a9', /* skipped */ 'a1',
+			'b9', 'b0', 'b1'
 		]);
 	});
 });
 
 describe(next.name, () => {
 	it('oscillates blinker', () => {
-		const grid = [
-			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
-			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
-			[{color: null}, {color: 'red'}, {color: 'red'}, {color: 'red'}, {color: null}],
-			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
-			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
+		const grid: GridData = [
+			[0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0],
+			[0, 'red', 'red', 'red', 0],
+			[0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0]
 		];
-		const expected = [
-			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
-			[{color: null}, {color: null}, {color: 'red'}, {color: null}, {color: null}],
-			[{color: null}, {color: null}, {color: 'red'}, {color: null}, {color: null}],
-			[{color: null}, {color: null}, {color: 'red'}, {color: null}, {color: null}],
-			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
+		const expected: GridData = [
+			[0, 0, 0, 0, 0],
+			[0, 0, 'red', 0, 0],
+			[0, 0, 'red', 0, 0],
+			[0, 0, 'red', 0, 0],
+			[0, 0, 0, 0, 0]
 		];
 
 		const grid1 = next(grid, willLive);
@@ -57,22 +55,21 @@ describe(next.name, () => {
 	});
 
 	it('blends rgb to green being the average', () => {
-		const grid = [
-			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
-			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
-			[{color: null}, {color: '#ff0000'}, {color: '#00ff00'}, {color: '#0000ff'}, {color: null}],
-			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
-			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
+		const grid: GridData = [
+			[0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0],
+			[0, '#ff0000', '#00ff00', '#0000ff', 0],
+			[0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0]
 		];
-		const expected = [
-			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
-			[{color: null}, {color: null}, {color: '#00ff00'}, {color: null}, {color: null}],
-			[{color: null}, {color: null}, {color: '#00ff00'}, {color: null}, {color: null}],
-			[{color: null}, {color: null}, {color: '#00ff00'}, {color: null}, {color: null}],
-			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
+		const expected: GridData = [
+			[0, 0, 0, 0, 0],
+			[0, 0, '#00ff00', 0, 0],
+			[0, 0, '#00ff00', 0, 0],
+			[0, 0, '#00ff00', 0, 0],
+			[0, 0, 0, 0, 0]
 		];
 
 		expect(next(grid, willLive)).toEqual(expected);
 	});
 });
-

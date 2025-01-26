@@ -3,20 +3,24 @@ import type {GridData} from '../types/grid';
 import type {WebSocketServer} from './registerServer';
 import {popPlots} from './state';
 
-let grid: GridData = Array.from({length: 100}, () => Array.from({length: 100}, () => ({color: null}) as const));
+let grid: GridData = Array.from({length: 100}, () => Array.from({length: 100}, () => 0));
 let generation = -1;
 
 function applyPlots() {
-	const plots = popPlots();
-	plots.forEach(p => {
-		const pattern = patterns[p.pattern];
-		pattern.forEach((row, y) => {
-			row.forEach((pixel, x) => {
-				if (pixel === 0) return;
-				grid[p.position[0] + y][p.position[1] + x] = {color: pixel === 8 ? p.player.color : null};
+	try {
+		const plots = popPlots();
+		plots.forEach(p => {
+			const pattern = patterns[p.pattern];
+			pattern.forEach((row, y) => {
+				row.forEach((pixel, x) => {
+					if (pixel === 0) return;
+					grid[p.position[0] + y][p.position[1] + x] = pixel === 8 ? p.player.color : 0;
+				});
 			});
 		});
-	});
+	} catch (e) {
+		console.error('Error applying plots:', e);
+	}
 }
 
 export function tick(io: WebSocketServer) {

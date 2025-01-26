@@ -5,7 +5,7 @@
 
 	type Props = {
 		data: GridData;
-		cell: Snippet<[string | null, () => void]>;
+		cell: Snippet<[string | 0, () => void]>;
 		onCellClick: (position: Point) => void;
 	};
 
@@ -21,7 +21,7 @@
 
 <div class="grid grow" style:grid-template-columns="repeat({data.length}, 1fr)">
 	{#each data as cells, y}
-		{#each cells as { color }, x}
+		{#each cells as color, x}
 			{@render cell(color, onClickCallback([y, x]))}
 		{/each}
 	{/each}

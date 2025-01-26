@@ -43,17 +43,17 @@ type WillLivePredicate = (cell: CellData, neighbors: CellData[]) => CellData;
 export const next = (grid: GridData, willLive: WillLivePredicate): GridData =>
 	grid.map((row, y) => row.map((cell, x) => willLive(cell, neighbors(grid, [y, x]))));
 
-export const DEAD_CELL: CellData = {color: null} as const;
+export const DEAD_CELL: CellData = 0;
 
 export const willLive: WillLivePredicate = (cell, neighbors) => {
-	const alive = cell.color !== null;
-	const aliveNeighbors = neighbors.filter(n => n.color !== null);
+	const alive = cell !== 0;
+	const aliveNeighbors = neighbors.filter(n => n !== 0);
 	const aliveNeighborCount = aliveNeighbors.length;
 
 	if (alive) {
 		return aliveNeighborCount === 2 || aliveNeighborCount === 3 ? cell : DEAD_CELL;
 	} else {
-		return aliveNeighborCount === 3 ? {color: blendColors(aliveNeighbors.map(n => n.color!))} : DEAD_CELL;
+		return aliveNeighborCount === 3 ? blendColors(aliveNeighbors.map(n => n!)) : DEAD_CELL;
 	}
 };
 
