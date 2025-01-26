@@ -6,7 +6,7 @@ export function applyPlots(grid: GridData) {
 	try {
 		const plots = popPlots();
 		plots.forEach(p => {
-			const pattern = patterns[p.pattern];
+			const pattern = patterns[p.pattern].pattern;
 			const [posY, posX] = p.position;
 			pattern.forEach((row, patternY) => {
 				row.forEach((pixel, patternX) => {
@@ -24,28 +24,69 @@ export function applyPlots(grid: GridData) {
 type Pixel = 0 | 1 | 8;
 type Pattern = readonly Pixel[][];
 
-const patterns: Record<string, Pattern> = {
-	n: [
-		[1, 1, 1, 1, 1],
-		[1, 8, 8, 8, 1],
-		[1, 8, 1, 8, 1],
-		[1, 8, 1, 8, 1],
-		[1, 1, 1, 1, 1]
-	],
-	exp: [
-		[1, 1, 1, 1, 1, 1, 1],
-		[1, 8, 8, 8, 1, 8, 1],
-		[1, 8, 1, 1, 1, 1, 1],
-		[1, 1, 1, 1, 8, 8, 1],
-		[1, 1, 8, 8, 1, 8, 1],
-		[1, 8, 1, 8, 1, 8, 1],
-		[1, 1, 1, 1, 1, 1, 1]
-	],
-	glider: [
-		[0, 1, 1, 1, 0],
-		[0, 1, 8, 1, 1],
-		[1, 1, 1, 8, 1],
-		[1, 8, 8, 8, 1],
-		[1, 1, 1, 1, 1]
-	]
+export const patterns: Record<string, {name: string; pattern: Pattern}> = {
+	dot: {
+		name: 'Dot',
+		pattern: [[8]]
+	},
+	n: {
+		name: 'n-shape',
+		pattern: [
+			[1, 1, 1, 1, 1],
+			[1, 8, 8, 8, 1],
+			[1, 8, 1, 8, 1],
+			[1, 8, 1, 8, 1],
+			[1, 1, 1, 1, 1]
+		]
+	},
+	exp: {
+		name: 'Expand',
+		pattern: [
+			[1, 1, 1, 1, 1, 1, 1],
+			[1, 8, 8, 8, 1, 8, 1],
+			[1, 8, 1, 1, 1, 1, 1],
+			[1, 1, 1, 1, 8, 8, 1],
+			[1, 1, 8, 8, 1, 8, 1],
+			[1, 8, 1, 8, 1, 8, 1],
+			[1, 1, 1, 1, 1, 1, 1]
+		]
+	},
+	glider: {
+		name: 'Glider',
+		pattern: [
+			[0, 1, 1, 1, 0],
+			[0, 1, 8, 1, 1],
+			[1, 1, 1, 8, 1],
+			[1, 8, 8, 8, 1],
+			[1, 1, 1, 1, 1]
+		]
+	},
+    spaceship: {
+		name: 'Spaceship',
+		pattern: [
+			[0, 0, 0, 1, 1, 1, 1],
+			[1, 1, 1, 1, 8, 8, 1, 1],
+			[1, 8, 8, 8, 1, 8, 8, 1],
+			[1, 8, 8, 8, 8, 8, 1, 1],
+			[1, 1, 8, 8, 8, 1, 1],
+			[0, 1, 1, 1, 1, 1]
+		]
+	},
+	penta: {
+		name: 'Penta-decathlon',
+		pattern: [
+			[0, 1, 1, 1],
+			[0, 1, 8, 1],
+			[1, 1, 8, 1, 1],
+			[1, 8, 1, 8, 1],
+			[1, 1, 8, 1, 1],
+			[0, 1, 8, 1, 0],
+			[0, 1, 8, 1, 0],
+			[1, 1, 8, 1, 1],
+			[1, 8, 1, 8, 1],
+			[1, 1, 8, 1, 1],
+			[0, 1, 8, 1],
+			[0, 1, 1, 1]
+		]
+	}
 } as const;
