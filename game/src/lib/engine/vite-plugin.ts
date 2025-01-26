@@ -1,6 +1,9 @@
-import {type PluginOption, type PreviewServer, type ViteDevServer} from 'vite';
+import {build, type PluginOption, type PreviewServer, type ViteDevServer} from 'vite';
 import {registerServer} from './registerServer';
 
+/**
+ * Starts the WebSocket server which hosts the game engine during development and preview testing.
+ */
 function configureServer(server: ViteDevServer | PreviewServer) {
 	if (!server.httpServer) {
 		console.error('No http server available - unable to start WebSocket server.');
@@ -9,6 +12,7 @@ function configureServer(server: ViteDevServer | PreviewServer) {
 
 	const {io, interval} = registerServer(server.httpServer);
 
+	// Handle closing the WebSocket server when the development server reloads.
 	let closing = false;
 	server.httpServer.on('close', () => {
 		if (closing) return;
@@ -24,27 +28,26 @@ export const webSocketServer = (): PluginOption => {
 		name: 'WebSocketServer',
 		enforce: 'post',
 		configureServer,
-		configurePreviewServer: configureServer
+		configurePreviewServer: configureServer,
 		// TODO: Try to fix production build integration: https://vite.dev/guide/api-javascript.html#build
 		// async buildEnd() {
 		// 	await build({
 		// 		configFile: false,
 		// 		build: {
-		// 			outDir: 'build',
+		// 			outDir: 'build-ws',
 		// 			lib: {
 		// 				entry: 'src/lib/engine/node-server.ts',
 		// 				formats: ['es']
 		// 			},
 		// 			rollupOptions: {
 		// 				input: {
-		// 					main: 'src/lib/engine/node-server.ts'
+		// 					main: 'src/lib/engine/registerServer.ts'
 		// 				},
 		// 				output: {
-		// 					entryFileNames: 'extended-server.js'
+		// 					entryFileNames: 'websocket-server.js'
 		// 				}
 		// 			}
 		// 		}
-		// 		// plugins: [require('@rollup/plugin-typescript')()]
 		// 	});
 		// }
 	};

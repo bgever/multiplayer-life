@@ -1,4 +1,4 @@
-import type { Point } from '../game/game';
+import type {Point} from '../game/game';
 import type {Player} from './events/spec/player';
 
 let players: Player[] = [];
@@ -9,7 +9,7 @@ export function removePlayer(guid: string) {
 	players = players.filter(p => p.uuid !== guid);
 }
 
-type Plot = {player: Player, position: Point, pattern: string};
+type Plot = {player: Player; position: Point; pattern: string};
 const plots: Plot[] = [];
 
 export const pushPlot = (plot: Plot) => plots.push(plot);
