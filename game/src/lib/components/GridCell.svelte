@@ -3,7 +3,7 @@
 </script>
 
 {#snippet cell(color, onClick)}
-    <div style="background-color: {color ?? '#eee'}" on:mousedown={onClick}></div>
+    <div style="background-color: {color || '#eee'}" on:mousedown={onClick}></div>
 {/snippet}
 
 <style>
