@@ -1,4 +1,5 @@
-import type {CellData, GridData} from '$lib/types/grid';
+import type {CellData, GridData} from '../types/grid';
+import * as d3 from 'd3';
 
 export type Point = readonly [y: number, x: number];
 
@@ -46,13 +47,29 @@ export const DEAD_CELL: CellData = {color: null} as const;
 
 export const willLive: WillLivePredicate = (cell, neighbors) => {
 	const alive = cell.color !== null;
-	const aliveNeighborCount = neighbors.filter(n => n.color !== null).length;
+	const aliveNeighbors = neighbors.filter(n => n.color !== null);
+	const aliveNeighborCount = aliveNeighbors.length;
 
 	if (alive) {
 		return aliveNeighborCount === 2 || aliveNeighborCount === 3 ? cell : DEAD_CELL;
 	} else {
-		return aliveNeighborCount === 3 ? {color: 'red'} : DEAD_CELL;
+		return aliveNeighborCount === 3 ? {color: blendColors(aliveNeighbors.map(n => n.color!))} : DEAD_CELL;
 	}
 };
+
+function blendColors(colors: string[]): string {
+	const uniqueColors = new Set(colors);
+	if (uniqueColors.size === 1) {
+		return colors[0];
+	}
+
+	const hue =
+		uniqueColors
+			.values()
+			.map(color => d3.hsl(color)!.h)
+			.reduce((a, b) => a + b, 0) / uniqueColors.size;
+
+	return d3.hsl(hue, 1, 0.5).formatHex();
+}
 
 export const internal = {neighboringPositions, neighbors} as const;

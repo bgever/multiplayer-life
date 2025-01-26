@@ -55,4 +55,24 @@ describe(next.name, () => {
 		expect(grid1, 'horizontal becomes vertical').toEqual(expected);
 		expect(grid2, 'goes back to original').toEqual(grid);
 	});
+
+	it('blends rgb to green being the average', () => {
+		const grid = [
+			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
+			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
+			[{color: null}, {color: '#ff0000'}, {color: '#00ff00'}, {color: '#0000ff'}, {color: null}],
+			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
+			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
+		];
+		const expected = [
+			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
+			[{color: null}, {color: null}, {color: '#00ff00'}, {color: null}, {color: null}],
+			[{color: null}, {color: null}, {color: '#00ff00'}, {color: null}, {color: null}],
+			[{color: null}, {color: null}, {color: '#00ff00'}, {color: null}, {color: null}],
+			[{color: null}, {color: null}, {color: null}, {color: null}, {color: null}],
+		];
+
+		expect(next(grid, willLive)).toEqual(expected);
+	});
 });
+
