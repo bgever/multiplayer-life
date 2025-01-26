@@ -2,8 +2,8 @@
 	export {cell};
 </script>
 
-{#snippet cell(color)}
-    <div style="background-color: {color}"></div>
+{#snippet cell(color, onClick)}
+    <div style="background-color: {color ?? '#eee'}" on:mousedown={onClick}></div>
 {/snippet}
 
 <style>
