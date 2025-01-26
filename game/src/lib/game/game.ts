@@ -3,19 +3,10 @@ import * as d3 from 'd3';
 
 export type Point = readonly [y: number, x: number];
 
-const indexWithinBounds = (size: number) => (index: number) => {
-	// When off the top or left edge, return the bottom or right edge.
-	if (index === -1) {
-		return size - 1;
-	}
-	// When off the bottom or right edge, return the top or left edge.
-	if (index === size) {
-		return 0;
-	}
-	return index;
-};
+/** Ensures that when the index is off the edges, it returns a position within the grid in a repeating pattern. */
+const indexWithinBounds = (size: number) => (index: number) => (index + size) % size;
 
-const positionWithinBounds = (position: Point, gridSize: number) => position.map(indexWithinBounds(gridSize));
+export const positionWithinBounds = (position: Point, gridSize: number) => position.map(indexWithinBounds(gridSize));
 
 const getIn = (grid: GridData) => (position: Point) =>
 	(([y, x]) => grid[y][x])(positionWithinBounds(position, grid.length));
