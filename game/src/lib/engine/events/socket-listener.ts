@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import {validate} from 'uuid';
 import type {ServerSocket, WebSocketServer} from '../registerServer';
-import {addPlayer, getPlayers} from '../state';
+import {addPlayer, getPlayers, pushPlot} from '../state';
 import type {Player} from './spec';
 
 export function listenSocket(socket: ServerSocket, io: WebSocketServer) {
@@ -24,5 +24,15 @@ export function listenSocket(socket: ServerSocket, io: WebSocketServer) {
 		console.log('Player joined:', player);
 
 		io.emit('players', getPlayers());
+	});
+
+	socket.on('plot', (position, pattern) => {
+		console.log('Player plotting:', socket.data.uuid, position, pattern);
+		const player = getPlayers().find(p => p.uuid === socket.data.uuid);
+		if (!player) {
+			console.warn('Player not found:', socket.data.uuid);
+			return;
+		}
+		pushPlot({player, position, pattern});
 	});
 }

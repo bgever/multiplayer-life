@@ -2,12 +2,15 @@
 	import {onDestroy} from 'svelte';
 	import {io, Socket} from 'socket.io-client';
 	import type {ClientSideEvents, Player, ServerSideEvents} from '$lib/engine/events/spec';
+	import type {GridData} from '$lib/types/grid';
+	import type {Point} from '$lib/game/game';
 	import Grid from '$lib/components/Grid.svelte';
 
 	let joining = $state(true);
-	let updates = $state(0);
 	let playerColor = $state('#000');
 	let players = $state([] as Player[]);
+	let grid = $state([] as GridData);
+	let generation = $state(0);
 
 	const socket = io() as unknown as Socket<ServerSideEvents, ClientSideEvents>;
 
@@ -21,10 +24,6 @@
 		// Request to join.
 		let uuid = crypto.randomUUID();
 		socket.emit('join', uuid);
-		socket.on('hello', time => {
-			console.log(new Date(time), socket.id);
-			updates++;
-		});
 		socket.on('players', updatedPlayers => {
 			console.log(updatedPlayers);
 			const player = updatedPlayers.find(p => p.uuid === uuid);
@@ -33,52 +32,31 @@
 			playerColor = player.color;
 			players = updatedPlayers;
 		});
+		socket.on('snapshot', (gen, updatedGrid) => {
+			generation = gen;
+			grid = updatedGrid;
+		});
 	});
 
-	function getRandomColor() {
-		const letters = '0123456789ABCDEF';
-		let color = '#';
-		for (let i = 0; i < 6; i++) {
-			color += letters[Math.floor(Math.random() * 16)];
-		}
-		return color;
+	function onCellClick(position: Point) {
+		socket.emit('plot', position, 'exp');
 	}
-
-	function generateGrid(rows: number, cols: number) {
-		const grid = [];
-		for (let i = 0; i < rows; i++) {
-			const row = [];
-			for (let j = 0; j < cols; j++) {
-				row.push({color: Math.random() > 0.2 ? getRandomColor() : null});
-			}
-			grid.push(row);
-		}
-		return grid;
-	}
-
-	const grid = generateGrid(100, 100);
 </script>
 
 <div class="flex h-full flex-col">
 	<div>
 		<div class="flex justify-between p-1" style="background-color: {playerColor}">
 			<div>Player</div>
-			<div>Update #{updates}</div>
+			<div>Gen {generation}</div>
 		</div>
 		<div>Players: {players.length}</div>
 	</div>
 
-	<div class="flex-grow flex flex-col items-center">
+	<div class="flex flex-grow flex-col items-center">
 		{#if joining}
 			<p>Joining...</p>
 		{:else}
-			<Grid data={grid} />
+			<Grid data={grid} {onCellClick} />
 		{/if}
 	</div>
 </div>
-
-<style>
-	:host {
-		height: 100vh;
-	}
-</style>
