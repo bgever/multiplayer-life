@@ -30,6 +30,17 @@ describe(neighbors.name, () => {
 	});
 });
 
+describe(neighbors.name, () => {
+	it('gets the 9,9 position with neighbors from opposite edges of the grid', () => {
+		// prettier-ignore
+		expect(neighbors(mockGrid, [9, 9])).toEqual([
+			'i8', 'i9', 'i0',
+			'j8', /* skipped */ 'j0',
+			'a8', 'a9', 'a0'
+		]);
+	});
+});
+
 describe(next.name, () => {
 	it('oscillates blinker', () => {
 		const grid: GridData = [
